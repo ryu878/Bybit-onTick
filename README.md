@@ -114,3 +114,149 @@ Supported Categories
 - inverse - Inverse futures contracts
 
 - option - Options contracts
+
+### Environment Variables
+Create a .env file in your project root:
+```
+BYBIT_TESTNET=false
+BYBIT_CATEGORY=spot
+BYBIT_SYMBOLS=BTCUSDT,ETHUSDT,ADAUSDT
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+```
+
+## API Reference
+### BybitOnTick Class
+### Constructor
+
+```
+BybitOnTick(symbols, category="spot", testnet=False)
+```
+
+### Parameters:
+
+- symbols (list): List of trading symbols to monitor
+
+- category (str): Trading category (spot, linear, inverse, option)
+
+- testnet (bool): Use testnet environment
+
+### Methods
+```
+start_listening(callback)
+```
+- Start the WebSocket connection and begin processing trades.
+
+### Parameters:
+
+- callback (function): Your onTick function that processes each trade
+
+### Trade Data Structure
+Each trade passed to your callback contains:
+```
+{
+    's': 'BTCUSDT',        # Symbol
+    'p': '45000.50',       # Price
+    'v': '0.001',          # Volume/Size
+    'S': 'Buy',            # Side (Buy/Sell)
+    'T': 1642694400000,    # Timestamp (milliseconds)
+    'i': '1234567890',     # Trade ID
+    'BT': false            # Whether buyer is market maker
+}
+```
+## Running the Application
+### Development Mode
+
+```
+python main.py
+```
+
+### Production with Process Management
+```
+# Using PM2
+pm2 start main.py --name bybit-ontick
+
+# Using systemd
+sudo systemctl start bybit-ontick
+```
+### Docker Support
+```
+# Build image
+docker build -t bybit-ontick .
+
+# Run container
+docker run -d --name Bybit-onTick \
+  -e BYBIT_SYMBOLS=BTCUSDT,ETHUSDT \
+  -e BYBIT_CATEGORY=spot \
+  bybit-ontick
+
+```
+
+### Error Handling
+The library includes comprehensive error handling:
+
+- Connection Errors: Automatic reconnection with exponential backoff
+
+- Data Parsing Errors: Graceful error logging without stopping the stream
+
+- Rate Limiting: Built-in rate limit handling
+
+- Network Issues: Automatic recovery from network interruptions
+
+### Logging
+Enable detailed logging:
+
+```
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+```
+
+## Performance Optimization
+### Redis Integration
+For high-frequency trading, integrate with Redis for fast state management:
+```
+import redis
+import json
+
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
+
+def optimized_on_tick(trade_data):
+    # Store trade data in Redis
+    redis_client.lpush('trades', json.dumps(trade_data))
+    redis_client.ltrim('trades', 0, 999)  # Keep last 1000 trades
+    
+    # Your trading logic
+    process_trade(trade_data)
+
+```
+## Disclaimer
+This project is for informational and educational purposes only. You should not use this information or any other material as legal, tax, investment, financial or other advice. Nothing contained here is a recommendation, endorsement or offer by me to buy or sell any securities or other financial instruments. If you intend to use real money, use it at your own risk. Under no circumstances will I be responsible or liable for any claims, damages, losses, expenses, costs or liabilities of any kind, including but not limited to direct or indirect damages for loss of profits.
+
+## Contacts
+I develop trading bots of any complexity, dashboards and indicators for crypto exchanges, forex and stocks.
+To contact me please pm:
+
+Telegram: https://t.me/ryu8777
+
+Discord: https://discord.gg/zSw58e9Uvf
+
+## Crypto Exchanges
+
+😎 Register on BingX and get a 20% discount on fees: https://bingx.com/invite/HAJ8YQQAG/
+
+👍 MEXC: https://promote.mexc.com/r/f3dtDLZK
+
+🐀 Join Bybit: https://www.bybit.com/invite?ref=P11NJW
+
+## VPS for bots and scripts
+I prefer using DigitalOcean.
+  
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%202.svg)](https://www.digitalocean.com/?refcode=3d7f6e57bc04&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+  
+To get $200 in credit over 60 days use my ref link: https://m.do.co/c/3d7f6e57bc04
