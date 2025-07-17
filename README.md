@@ -104,3 +104,13 @@ handler = BybitOnTick(symbols=["BTCUSDT", "ETHUSDT"])
 handler.start_listening(callback=bot.on_tick)
 
 ```
+### Configuration
+Supported Categories
+
+- spot - Spot trading pairs
+
+- linear - Linear futures contracts
+
+- inverse - Inverse futures contracts
+
+- option - Options contracts
