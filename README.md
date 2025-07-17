@@ -25,3 +25,10 @@ A Python implementation that replicates MQL5's `onTick()` functionality for Bybi
 ```
 pip install pybit
 ```
+
+### Clone Repository
+
+```
+git clone https://github.com/ryu878/Bybit-onTick.git
+cd bybit-ontick
+```
