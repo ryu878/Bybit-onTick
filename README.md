@@ -237,6 +237,7 @@ def optimized_on_tick(trade_data):
 ```
 
 
+***
 
 ## 📄 License
 MIT License - Feel free to modify and distribute.
